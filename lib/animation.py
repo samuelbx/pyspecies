@@ -23,17 +23,15 @@ def Animate(Space, Xlist, length=7, filename=''):
         Vline.set_data(Space, V)
         return Uline, Vline
 
-    Xlist = Xlist[::max(len(Xlist) // (length * 1000), 1)]
+    Xlist = Xlist[::max(len(Xlist) // (length * 100), 1)]
 
     ani = animation.FuncAnimation(fig,
                                   anim,
                                   frames=len(Xlist),
-                                  interval=(length * 1000) // len(Xlist),
+                                  interval=max((length * 1000) // len(Xlist), 1),
                                   blit=True,
                                   repeat=True)
 
-
-    print(len(Xlist)*((length * 1000) // len(Xlist)), len(Xlist), (length * 1000) // len(Xlist))
     plt.show()
 
     if filename:

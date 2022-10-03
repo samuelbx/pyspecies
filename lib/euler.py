@@ -21,8 +21,6 @@ MODES = {
     'R': {'diags': [-3, -1, 1], 'pad': [[0, 0], [0, 0], [1, 1]]},
     'S': {'diags': [-2, 0, 2], 'pad': [[1, 0], [1, 0], [1, 0]]}
 }
-
-
 def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
     baseline = 2 * (c1 * np.ones(len(W)) + c2 * W)
 
@@ -36,9 +34,9 @@ def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
 
     # Boundary conditions
     coef = int(not der)
-    center[0] = coef  # A[0, 0]
-    over[0] = -coef  # A[0, 1]
-    under[-1] = coef  # A[-1, -2]
+    center[0] = coef    # A[0, 0]
+    over[0] = -coef     # A[0, 1]
+    under[-1] = coef    # A[-1, -2]
     center[-1] = -coef  # A[-1, -1]
 
     if not mode:
@@ -87,7 +85,7 @@ def BackwardEuler(X0: np.ndarray,
     dx = Space[1] - Space[0]
 
     print('dt/(dx^2) =', dt / (dx**2))
-    for n in tqdm(range(1, len(Time))):
+    for n in tqdm(range(1, len(Time)), 'Simulation in progress'):
         Xm = X_list[-1].copy()
         Xk = Xm.copy()
 
@@ -105,6 +103,7 @@ def BackwardEuler(X0: np.ndarray,
 
             # Stop the simulation if the artifacts are too important
             if norm > dvgThreshold:
+                print('Huge numerical artifacts detected - simulation aborted.')
                 return X_list
 
         X_list.append(Xk)

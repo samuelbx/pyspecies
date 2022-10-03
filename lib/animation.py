@@ -1,4 +1,4 @@
-from crossdiff.utils import XtoUV
+from lib.utils import XtoUV
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np

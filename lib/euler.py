@@ -1,4 +1,4 @@
-from crossdiff.utils import XtoUV, UVtoX
+from lib.utils import XtoUV, UVtoX
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spl

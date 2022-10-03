@@ -1,8 +1,8 @@
+from crossdiff.utils import XtoUV, UVtoX
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spl
 from tqdm import tqdm
-from lib.utils import XtoUV, UVtoX
 
 
 # Input : L = (x1,...,xn)

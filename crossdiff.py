@@ -1,6 +1,6 @@
-from lib.animation import Animate
-from lib.euler import BackwardEuler
-from lib.utils import UVtoX
+from crossdiff.animation import Animate
+from crossdiff.euler import BackwardEuler
+from crossdiff.utils import UVtoX
 import numpy as np
 
 

@@ -65,3 +65,4 @@ def LinearDiffusionScenario1():
 
 
 CrossDiffusionScenario1()
+# LinearDiffusionScenario1()    # Uncomment to see this scenario

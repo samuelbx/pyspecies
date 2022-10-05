@@ -17,15 +17,15 @@ def plateau(x):
 def CrossDiffusionScenario1():
     # PDE coefficients
     D = np.array([
-        [1e-3, 3e-2],
-        [3e-2, 1e-3]
+        [1e-3, 3e-1],
+        [3e-1, 1e-3]
     ])
 
     # Discretization of spacetime
     K = 1000   # space
-    N = 5000   # time
-    Time = np.linspace(0, 15, N)
-    Space = np.linspace(-0.6, 0.6, K)
+    N = 10000   # time
+    Time = np.linspace(0, 2, N)
+    Space = np.linspace(-1, 1, K)
 
     # Initial condition
     U0 = 0.2 + plateau(Space+0.1)
@@ -34,9 +34,11 @@ def CrossDiffusionScenario1():
 
     # Solve the system of PDEs using Backward Euler method
     X_list = BackwardEuler(X0, Time, Space, D)
+    X2_list = BackwardEuler(X_list[-1], Time, Space, 700*D)
 
     # Output an animated graph
     Animate(Space, X_list, length=10)
+    Animate(Space, X2_list, length=10)
 
 
 def LinearDiffusionScenario1():
@@ -62,7 +64,6 @@ def LinearDiffusionScenario1():
 
     # Output an animated graph
     Animate(Space, X_list, length=10)
-
 
 CrossDiffusionScenario1()
 # LinearDiffusionScenario1()    # Uncomment to see this scenario

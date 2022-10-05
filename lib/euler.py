@@ -26,7 +26,7 @@ def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
 
     # Set diag, underdiag and overdiag coefficients
     under = -baseline[:-1] / 2
-    over = -baseline[:-1] / 2
+    over = -baseline[1:] / 2
     center = baseline
 
     if not der:
@@ -36,8 +36,8 @@ def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
     coef = int(not der)
     center[0] = coef    # A[0, 0]
     over[0] = -coef     # A[0, 1]
-    under[-1] = coef    # A[-1, -2]
-    center[-1] = -coef  # A[-1, -1]
+    under[-1] = -coef    # A[-1, -2]
+    center[-1] = coef  # A[-1, -1]
 
     if not mode:
         return sp.diags([under, center, over], [-1, 0, 1])

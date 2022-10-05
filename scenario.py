@@ -17,8 +17,8 @@ def plateau(x):
 def CrossDiffusionScenario1():
     # PDE coefficients
     D = np.array([
-        [1e-20, 3e-4],
-        [3e-4, 1e-20]
+        [1e-3, 3e-2],
+        [3e-2, 1e-3]
     ])
 
     # Discretization of spacetime

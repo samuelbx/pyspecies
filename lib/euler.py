@@ -93,7 +93,7 @@ def BackwardEuler(X0: np.ndarray,
         for _ in range(max_iter):
             Jac = Jg(Xk, D, dx, dt)
             B = -g(Xk, Xm, D, dx, dt)
-            deltaX = spl.spsolve(Jac, B)
+            deltaX = spl.spsolve(Jac, B, use_umfpack = True)
             Xk += deltaX
 
             # Convergence criterion of the Newton method

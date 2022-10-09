@@ -4,10 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def Animate(Space, Xlist, length=7, filename=''):
+def Animate(Space, Xlist, length=7, filename='', text=''):
     fig = plt.figure()
-    Uline, = plt.plot([], [], color='r')
-    Vline, = plt.plot([], [], color='b')
+    Uline, = plt.plot([], [], color='r', label='Species #1')
+    Vline, = plt.plot([], [], color='b', label='Species #2')
+
+    plt.xlabel('Space')
+    plt.ylabel('Concentrations')
+    plt.legend()
 
     # Compute plot axis size
     xmin, xmax = np.min(Space), np.max(Space)
@@ -31,6 +35,9 @@ def Animate(Space, Xlist, length=7, filename=''):
                                   interval=max((length * 1000) // len(Xlist), 1),
                                   blit=True,
                                   repeat=True)
+
+    if text:
+        plt.title(text)
 
     plt.show()
 

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# TODO: fix animation length calculation
 def Animate(Space, Xlist, Tlist, length=5, filename='', text=''):
     plt.style.use('seaborn-talk')
 

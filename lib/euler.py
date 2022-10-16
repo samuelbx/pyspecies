@@ -78,7 +78,6 @@ def BackwardEuler(X0: np.ndarray,
                   Space: np.ndarray,
                   D: np.ndarray,
                   newtThreshold=1e-8,
-                  dvgThreshold=1e-1,
                   max_iter=1000):
     X_list = [X0]
     dt = Time[1] - Time[0]
@@ -101,11 +100,8 @@ def BackwardEuler(X0: np.ndarray,
             if norm < newtThreshold:
                 break
 
-            # Stop the simulation if the artifacts are too important
-            if norm > dvgThreshold:
-                print('Huge numerical artifacts detected - simulation aborted.')
-                return X_list
-
         X_list.append(Xk)
+    
+    del X_list[0]
 
     return X_list

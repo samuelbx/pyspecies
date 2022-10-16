@@ -1,6 +1,4 @@
-from lib.animation import Animate
-from lib.euler import BackwardEuler
-from lib.utils import UVtoX
+from lib.population import Population
 import numpy as np
 
 
@@ -11,122 +9,46 @@ def exp_cinf(x):
 
 # Plateau function (support = [-0.5, 0.5])
 def plateau(x):
-    return (30 * exp_cinf(x + 0.5) * exp_cinf(-x + 0.5))**2
+    return (30 * exp_cinf(x + .5) * exp_cinf(-x + .5))**2
 
 
-def CrossDiffusionScenario1():
-    # PDE coefficients
-    D = np.array([
-        [1e-3, 3e-1],
-        [3e-1, 1e-3]
-    ])
-
-    # Discretization of spacetime
-    K = 1000   # space
-    N = 10000   # time
-    Time = np.linspace(0, 2, N)
-    Space = np.linspace(-1, 1, K)
-
-    # Initial condition
-    U0 = 0.2 + plateau(Space+0.1)
-    V0 = 0.4 - plateau(Space-0.1)
-    X0 = UVtoX(U0, V0)
-
-    # Title text
-    txt = 'D={}, K={}, N={}'.format(str(D).replace('\n', ''), K, N)
-
-    # Solve the system of PDEs using Backward Euler method
-    X_list = BackwardEuler(X0, Time, Space, D)
-    X2_list = BackwardEuler(X_list[-1], 700*Time, Space, D)
-
-    # Output an animated graph
-    Animate(Space, X_list, length=10, text=txt)
-    Animate(Space, X2_list, length=10, text=txt)
+def MixedScenario():
+    pop = Population(Space=np.linspace(-1, 1, 1000),
+                     u0=lambda x: 0.2 + plateau(x + .1),
+                     v0=lambda x: 0.4 - plateau(x - .1),
+                     D=np.array([[1e-3, 3e-1], [3e-1, 1e-3]]))
+    pop.simulate(duration=10, N=1000)
+    pop.simulate(duration=100, N=500)
+    pop.simulate(duration=300, N=500)
+    pop.animate(filename='mixed')
 
 
-def LinearDiffusionScenario1():
-    # PDE coefficients
-    D = np.array([
-        [1e-2, 0],
-        [0, 1e-2]
-    ])
-
-    # Discretization of spacetime
-    K = 1000   # space
-    N = 4000   # time
-    Time = np.linspace(0, 10, N)
-    Space = np.linspace(-0.6, 0.6, K)
-
-    # Title text
-    txt = 'D={}, K={}, N={}'.format(str(D).replace('\n', ''), K, N)
-
-    # Initial condition
-    U0 = 0.2 + plateau(Space+0.1)
-    V0 = 0.4 - plateau(Space-0.1)
-    X0 = UVtoX(U0, V0)
-
-    # Solve the system of PDEs using Backward Euler method
-    X_list = BackwardEuler(X0, Time, Space, D)
-
-    # Output an animated graph
-    Animate(Space, X_list, length=10, text=txt)
+def LinearScenario():
+    pop = Population(Space=np.linspace(-1, 1, 1000),
+                     u0=lambda x: 0.2 + plateau(x + 0.1),
+                     v0=lambda x: 0.4 - plateau(x - 0.1),
+                     D=np.array([[1e-2, 0], [0, 1e-2]]))
+    pop.simulate(duration=10, N=1000)
+    pop.animate()
 
 
-def SineDiffusionScenario1():
-    # PDE coefficients
-    D = np.array([
-        [0, 3e-1],
-        [3e-1, 0]
-    ])
-
-    # Discretization of spacetime
-    K = 1000   # space
-    N = 15000   # time
-    Time = np.linspace(0, 0.4, N)
-    Space = np.linspace(-1, 1, K)
-
-    # Initial condition
-    U0 = np.sin(4*Space)**2
-    V0 = np.sin(4*Space+0.25)**2
-    X0 = UVtoX(U0, V0)
-
-    # Title text
-    txt = 'D={}, K={}, N={}'.format(str(D).replace('\n', ''), K, N)
-
-    # Solve the system of PDEs using Backward Euler method
-    X_list = BackwardEuler(X0, Time, Space, D)
-
-    # Output an animated graph
-    Animate(Space, X_list, length=10, text=txt)
+def SineScenario1():
+    pop = Population(Space=np.linspace(-1, 1, 1000),
+                     u0=lambda x: np.sin(4 * x)**2,
+                     v0=lambda x: np.sin(4 * x + .25)**2,
+                     D=np.array([[0, 3e-1], [3e-1, 0]]))
+    pop.simulate(duration=0.4, N=1000)
+    pop.animate()
 
 
-def SineDiffusionScenario2():
-    # PDE coefficients
-    D = np.array([
-        [0, 2e-1],
-        [2e-1, 0]
-    ])
-
-    # Discretization of spacetime
-    K = 1000   # space
-    N = 1000   # time
-    Time = np.linspace(0, 0.1, N)
-    Space = np.linspace(-1, 1, K)
-
-    # Initial condition
-    U0 = np.cos(2*Space)**2
-    V0 = np.sin(6*Space)**2
-    X0 = UVtoX(U0, V0)
-
-    # Title text
-    txt = 'D={}, K={}, N={}'.format(str(D).replace('\n', ''), K, N)
-
-    # Solve the system of PDEs using Backward Euler method
-    X_list = BackwardEuler(X0, Time, Space, D)
-
-    # Output an animated graph
-    Animate(Space, X_list, length=10, text=txt, filename='sine2')
+def SineScenario2():
+    pop = Population(Space=np.linspace(-1, 1, 1000),
+                     u0=lambda x: np.cos(2 * x)**2,
+                     v0=lambda x: np.sin(6 * x)**2,
+                     D=np.array([[0, 2e-1], [2e-1, 0]]))
+    pop.simulate(duration=0.1, N=1000)
+    pop.animate()
 
 
 # Feel free to choose one of the previous scenarios
-SineDiffusionScenario1()
+MixedScenario()

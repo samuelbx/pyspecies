@@ -14,7 +14,6 @@ def padWithZeros(L, atStart: int, atEnd: int):
     return L2
 
 
-# TODO: Verify correctness of matrix
 MODES = {
     'P': {'diags': [-2, 0, 2], 'pad': [[0, 1], [0, 1], [0, 1]]},
     'Q': {'diags': [-1, 1, 3], 'pad': [[1, 1], [0, 0], [0, 0]]},
@@ -34,9 +33,9 @@ def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
 
     # Boundary conditions
     coef = int(not der)
-    center[0] = coef    # A[0, 0]
-    over[0] = -coef     # A[0, 1]
-    under[-1] = -coef    # A[-1, -2]
+    center[0] = coef  # A[0, 0]
+    over[0] = -coef  # A[0, 1]
+    under[-1] = -coef  # A[-1, -2]
     center[-1] = coef  # A[-1, -1]
 
     if not mode:
@@ -89,18 +88,15 @@ def BackwardEuler(X0: np.ndarray,
 
         # Multivariate Newton-Raphson method with sparse jacobian
         for _ in range(max_iter):
-            Jac = Jg(Xk, D, dx, dt)
-            B = -g(Xk, Xm, D, dx, dt)
-            deltaX = spl.spsolve(Jac, B, use_umfpack = True)
+            deltaX = spl.spsolve(Jg(Xk, D, dx, dt), -g(Xk, Xm, D, dx, dt))
             Xk += deltaX
 
-            # Convergence criterion of the Newton method
-            norm = np.linalg.norm(deltaX)
-            if norm < newtThreshold:
+            # Convergence criterion
+            if np.linalg.norm(deltaX) < newtThreshold:
                 break
 
         X_list.append(Xk)
-    
+
     del X_list[0]
 
     return X_list

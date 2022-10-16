@@ -20,7 +20,7 @@ def MixedScenario():
     pop.simulate(duration=10, N=1000)
     pop.simulate(duration=100, N=500)
     pop.simulate(duration=300, N=500)
-    pop.animate(filename='mixed')
+    pop.animate()  # pop.animate(filename='mixed') to save as mp4
 
 
 def LinearScenario():

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def Animate(Space, Xlist, Tlist, length=7, filename='', text=''):
+def Animate(Space, Xlist, Tlist, length=5, filename='', text=''):
     plt.style.use('seaborn-talk')
 
     fig = plt.figure()
@@ -31,11 +31,12 @@ def Animate(Space, Xlist, Tlist, length=7, filename='', text=''):
         Uline.set_data(Space, U)
         Vline.set_data(Space, V)
         st.set_text('Population dynamics simulation at t={}s'.format(
-            str(np.round(Tlist[i], decimals=3))))
+            str(np.round(Tlist[i], decimals=2))))
 
         return Uline, Vline
 
-    Xlist = Xlist[::max(len(Xlist) // (length * 100), 1)]
+    Xlist = Xlist[::max(len(Xlist) // (length * 10000), 1)]
+    Tlist = Tlist[::max(len(Tlist) // (length * 10000), 1)]
 
     ani = animation.FuncAnimation(fig,
                                   anim,

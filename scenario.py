@@ -28,7 +28,8 @@ def SineScenario1():
                      u0=lambda x: np.sin(4 * x)**2,
                      v0=lambda x: np.sin(4 * x + .25)**2,
                      D=np.array([[0, 3e-1], [3e-1, 0]]))
-    pop.sim(duration=.4, N=1000)
+    pop.sim(duration=.2, N=500)
+    pop.sim(duration=1.3, N=500)
     pop.anim()
 
 
@@ -36,10 +37,12 @@ def SineScenario2():
     pop = Population(Space=np.linspace(-1, 1, 1000),
                      u0=lambda x: np.cos(2 * x)**2,
                      v0=lambda x: np.sin(6 * x)**2,
-                     D=np.array([[0, 2e-1], [2e-1, 0]]))
-    pop.sim(duration=.1, N=1000)
+                     D=np.array([[0, 2e-2], [2e-2, 0]]))
+    pop.sim(duration=1, N=334)
+    pop.sim(duration=10, N=333)
+    pop.sim(duration=50, N=333)
     pop.anim()
 
 
 # Feel free to choose one of the previous scenarios
-MixedScenario()
+SineScenario1()

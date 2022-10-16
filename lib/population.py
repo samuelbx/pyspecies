@@ -22,7 +22,7 @@ class Population:
         X0 = self.Xlist[-1].copy()
         self.Xlist = self.Xlist + BackwardEuler(X0, Time, self.Space, self.D)
 
-    def anim(self, length=10, filename=None):
+    def anim(self, length=5, filename=None):
         K, N = len(self.Space), len(self.Tlist)
         txt = 'D={}, K={}, N={}'.format(
             str(self.D).replace('\n', ''), K, N - 2)

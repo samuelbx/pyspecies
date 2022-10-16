@@ -83,7 +83,6 @@ def BackwardEuler(X0: np.ndarray,
     dt = Time[1] - Time[0]
     dx = Space[1] - Space[0]
 
-    print('dt/(dx^2) =', dt / (dx**2))
     for n in tqdm(range(1, len(Time)), 'Simulation in progress'):
         Xm = X_list[-1].copy()
         Xk = Xm.copy()

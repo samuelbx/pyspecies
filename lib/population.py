@@ -8,7 +8,7 @@ class Population:
 
     Xlist = []
 
-    def __init__(self, Space: np.ndarray, u0: function, v0: function, D: np.ndarray):
+    def __init__(self, Space: np.ndarray, u0, v0, D: np.ndarray):
         self.D = D
         self.Space = Space
         X0 = UVtoX(u0(Space), v0(Space))

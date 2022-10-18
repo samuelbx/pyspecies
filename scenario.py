@@ -45,4 +45,6 @@ def SineScenario2():
 
 
 # Feel free to choose one of the previous scenarios
-SineScenario1()
+#LinearScenario()
+#SineScenario1()
+SineScenario2()

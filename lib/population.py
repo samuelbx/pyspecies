@@ -12,13 +12,13 @@ class Population:
         self.D = D
         self.Space = Space
         X0 = UVtoX(u0(Space), v0(Space))
-        self.Xlist = [X0, X0]
-        self.Tlist = np.array([0, 0])
+        self.Xlist = [X0]
+        self.Tlist = np.array([0])
 
     def sim(self, duration: float, N=100):
         Time = np.linspace(0, duration, N)
         self.Tlist = np.append(self.Tlist,
-                               2 * self.Tlist[-1] - self.Tlist[-2] + Time)
+                               self.Tlist[-1] + Time)
         X0 = self.Xlist[-1].copy()
         self.Xlist = self.Xlist + BackwardEuler(X0, Time, self.Space, self.D)
 

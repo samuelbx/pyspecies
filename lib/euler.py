@@ -1,81 +1,72 @@
-from lib.utils import XtoUV, UVtoX
+from lib.utils import XtoUV
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spl
 from tqdm import tqdm
 
 
-# Input : L = (x1,...,xn)
-# Output : (x1, 0, x2, 0, ..., 0, xn)
-# with optional additional zeroes at the beggining / end
-def padWithZeros(L, atStart: int, atEnd: int):
-    L2 = np.zeros(2 * len(L) + atStart + atEnd - 1)
-    L2[atStart::2] = L
-    return L2
+def MergeDiagonals(P, Q, R, S):
+    return [[Q[0]], Q[1], Q[2],
+            np.concatenate(([P[0]], Q[3], [S[0]])),
+            np.concatenate((P[1], [Q[4]], S[1])),
+            np.concatenate((P[2], S[2])),
+            np.concatenate((P[3], [R[0]], S[3])),
+            np.concatenate(([P[4]], R[1], [S[4]])), R[2], R[3], [R[4]]]
 
 
-MODES = {
-    'P': {'diags': [-2, 0, 2], 'pad': [[0, 1], [0, 1], [0, 1]]},
-    'Q': {'diags': [-1, 1, 3], 'pad': [[1, 1], [0, 0], [0, 0]]},
-    'R': {'diags': [-3,-1, 1], 'pad': [[0, 0], [0, 0], [1, 1]]},
-    'S': {'diags': [-2, 0, 2], 'pad': [[1, 0], [1, 0], [1, 0]]}
-}
-def M(c1: float, c2: float, W: np.ndarray, der=False, mode=None):
-    baseline = 2 * (c1 * np.ones(len(W)) + c2 * W)
-
-    # Set diag, underdiag and overdiag coefficients
-    under = -baseline[:-1] / 2
-    over = -baseline[1:] / 2
-    center = baseline
-
-    if not der:
-        center += np.ones(len(W))
-
-    # Boundary conditions
-    coef = int(not der)
-    center[0] = coef  # A[0, 0]
-    over[0] = -coef  # A[0, 1]
-    under[-1] = -coef  # A[-1, -2]
-    center[-1] = coef  # A[-1, -1]
-
-    if not mode:
-        return sp.diags([under, center, over], [-1, 0, 1])
-
-    # If asked, artificially insert zeroes between coefficients
-    # to prepare the final sparse matrix
-    else:
-        diags = MODES[mode]['diags']
-        pad = MODES[mode]['pad']
-        under = padWithZeros(under, pad[0][0], pad[0][1])
-        center = padWithZeros(center, pad[1][0], pad[1][1])
-        over = padWithZeros(over, pad[2][0], pad[2][1])
-        return sp.diags([under, center, over], diags)
-
-
-def g(X: np.ndarray, Xm: np.ndarray, D: np.ndarray, dx: float, dt: float):
+def funcAndJac(X: np.ndarray, Xm: np.ndarray, D: np.ndarray, R: np.ndarray,
+               dx: float, dt: float):
     U, V = XtoUV(X)
     Um, Vm = XtoUV(Xm.copy())
-    Um[0], Um[-1], Vm[0], Vm[-1] = 0, 0, 0, 0
-    Alpha = D * dt / (dx**2)
-    return UVtoX(
-        M(Alpha[0, 0], Alpha[0, 1], V).dot(U) - Um,
-        M(Alpha[1, 1], Alpha[1, 0], U).dot(V) - Vm)
+    D2, R2 = dt / dx**2 * D, dt * R
+    K = len(U)
 
+    # Compute function
+    def f(i, A, B):
+        A2, AB = A * A, A * B
+        center = ((1 - R2[i, 0] + 2 * D2[i, 0]) * A) + (
+            (R2[i, i + 1] + 2 * D2[i, i + 1]) * A2) + (
+                (R2[i, 2 - i] + 2 * D2[i, 2 - i]) * AB)
+        under = D2[i, 0] * A + D2[i, i + 1] * A2 + D2[i, 2 - i] * AB
+        over = D2[i, 0] * A + D2[i, i + 1] * A2 + D2[i, 2 - i] * AB
+        return center - np.roll(under, -1) - np.roll(over, -1)
 
-def Jg(X: np.ndarray, D: np.ndarray, dx: float, dt: float):
-    U, V = XtoUV(X)
-    Alpha = D * dt / (dx**2)
-    P = M(Alpha[0, 0], Alpha[0, 1], V, der=False, mode='P')
-    Q = M(0, Alpha[0, 1], U, der=True, mode='Q')
-    R = M(0, Alpha[1, 0], V, der=True, mode='R')
-    S = M(Alpha[1, 1], Alpha[1, 0], U, der=False, mode='S')
-    return P + Q + R + S
+    g = np.concatenate((f(0, U, V) - Um, f(1, V, U) - Vm))
+
+    # Compute jacobian (TODO: more efficient way to generate singlys)
+    def mu(i, A, B):
+        return D2[i, 0] * np.ones(K) + 2 * D2[i, i + 1] * A + D2[i, 2 - i] * B
+
+    def nu(i, A, B):
+        return (1 - R2[i, 0] + 2 * D2[i, 0]) * np.ones(K) + 2 * (
+            R2[i, i + 1] + 2 * D2[i, i + 1]) * A + (R2[i, 2 - i] +
+                                                    2 * D2[i, 2 - i]) * B
+
+    r, s = mu(0, U, V), mu(1, V, U)
+
+    J1 = [-r[-1], -r[1:], nu(0, U, V), -r[:-1], r[0]]
+    J2 = [
+        -D2[0, 2] * U[-1], -D2[0, 2] * U[1:], (R2[0, 2] + 2 * D2[0, 2]) * U,
+        -D2[0, 2] * U[:-1], -D2[0, 2] * U[0]
+    ]
+    J3 = [
+        -D2[1, 1] * V[-1], -D2[1, 1] * V[1:], (R2[1, 1] + 2 * D2[1, 1]) * V,
+        -D2[1, 1] * V[:-1], -D2[1, 1] * V[0]
+    ]
+    J4 = [-s[-1], -s[1:], -nu(1, V, U), -s[:-1], -s[0]]
+
+    Jg = sp.diags(
+        MergeDiagonals(J1, J2, J3, J4),
+        [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1])
+
+    return g, Jg
 
 
 def BackwardEuler(X0: np.ndarray,
                   Time: np.ndarray,
                   Space: np.ndarray,
                   D: np.ndarray,
+                  R: np.ndarray,
                   newtThreshold=1e-8,
                   max_iter=1000):
     X_list = [X0]
@@ -88,7 +79,8 @@ def BackwardEuler(X0: np.ndarray,
 
         # Multivariate Newton-Raphson method with sparse jacobian
         for _ in range(max_iter):
-            deltaX = spl.spsolve(Jg(Xk, D, dx, dt), -g(Xk, Xm, D, dx, dt))
+            b, A = funcAndJac(Xk, Xm, D, R, dx, dt)
+            deltaX = spl.spsolve(A, -b)
             Xk += deltaX
 
             # Convergence criterion

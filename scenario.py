@@ -85,16 +85,3 @@ def IntruderScenario():
 
 
 Test()
-
-""" Test the function Merge Diagonals:
-from lib.euler import MergeDiagonals
-
-K = 5
-J1 = [10, [11]*(K-1), [12]*(K), [13]*(K-1), 14]
-J2 = [20, [21]*(K-1), [22]*(K), [23]*(K-1), 24]
-J3 = [30, [31]*(K-1), [32]*(K), [33]*(K-1), 34]
-J4 = [40, [41]*(K-1), [42]*(K), [43]*(K-1), 44]
-
-import scipy.sparse as sp
-print(sp.diags(MergeDiagonals(J1,J2,J3,J4), [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1]).toarray())
-"""

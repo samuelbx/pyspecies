@@ -2,13 +2,15 @@ import numpy as np
 
 
 def XtoUV(X):
-    return X[::2], X[1::2]
+    K = len(X) // 2
+    return X[:K], X[K:]
 
 
 def UVtoX(U, V):
-    zeroes = np.zeros(2 * len(U))
-    zeroes[::2] = U
-    zeroes[1::2] = V
+    K = len(U)
+    zeroes = np.zeros(2 * K)
+    zeroes[:K] = U
+    zeroes[K:] = V
     return zeroes
 
 
@@ -19,4 +21,4 @@ def exp_cinf(x):
 
 # Plateau function (support = [-0.5, 0.5])
 def plateau(x):
-    return (30 * exp_cinf(x + .5) * exp_cinf(-x + .5))**2
+    return (30 * exp_cinf(x + 0.5) * exp_cinf(-x + 0.5)) ** 2

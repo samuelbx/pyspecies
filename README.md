@@ -1,7 +1,9 @@
 # PySpecies
 
 Ultra-fast simulation of advanced 1D population dynamics. Renders the solution of the following system of reaction-diffusion equations:
+
 ![System of equations](videos/eq.svg)
+
 where *u* and *v* are the concentrations of competing species.
 
 ## Quickstart
@@ -23,4 +25,5 @@ pop.anim()
 ```
 
 where *R* and *D* contain the reaction and diffusion coefficients of the species:
+
 ![System of equations](videos/matrices.svg)

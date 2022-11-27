@@ -1,6 +1,6 @@
 # PySpecies
 
-Ultra-fast simulation of advanced 1D population dynamics.
+Ultra-fast simulation of advanced 1D population dynamics. [Theory (french)](Theory.pdf)
 
 Renders the solution of the following system of reaction-diffusion equations:
 
@@ -28,4 +28,4 @@ pop.anim()
 
 where *R* and *D* contain the reaction and diffusion coefficients of the species:
 
-![System of equations](videos/matrices.svg)
+![Matrices](videos/matrices.svg)

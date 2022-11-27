@@ -18,7 +18,7 @@ class Population:
 
     def sim(self, duration: float, N=100):
         Time = np.linspace(0, duration, N)
-        self.Tlist = np.append(self.Tlist, 2 * self.Tlist[-1] - self.Tlist[-2] + Time)
+        self.Tlist = np.append(self.Tlist, self.Tlist[-1] + Time)
         X0 = self.Xlist[-1].copy()
         self.Xlist = self.Xlist + BackwardEuler(X0, Time, self.Space, self.D, self.R)
 

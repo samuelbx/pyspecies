@@ -21,4 +21,4 @@ def exp_cinf(x):
 
 # Plateau function (support = [-0.5, 0.5])
 def plateau(x):
-    return (30 * exp_cinf(x + .5) * exp_cinf(-x + .5))**2
+    return (30 * exp_cinf(x + 0.5) * exp_cinf(-x + 0.5)) ** 2

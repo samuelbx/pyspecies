@@ -13,8 +13,8 @@ class Population:
         self.D, self.R = D, R
         self.Space = Space
         X0 = UVtoX(u0(Space), v0(Space))
-        self.Xlist = [X0, X0]
-        self.Tlist = np.array([0, 0])
+        self.Xlist = [X0]
+        self.Tlist = np.array([0])
 
     def sim(self, duration: float, N=100):
         Time = np.linspace(0, duration, N)

@@ -1,6 +1,8 @@
 # PySpecies
 
-Ultra-fast simulation of advanced 1D population dynamics. Renders the solution of the following system of reaction-diffusion equations:
+Ultra-fast simulation of advanced 1D population dynamics.
+
+Renders the solution of the following system of reaction-diffusion equations:
 
 ![System of equations](videos/eq.svg)
 

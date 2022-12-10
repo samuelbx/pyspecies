@@ -41,6 +41,5 @@ p = pop.Pop(
 
 p.sim(duration=20, N=200)
 p.sim(duration=100, N=200)
-
 p.anim()
 ```

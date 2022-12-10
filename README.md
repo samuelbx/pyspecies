@@ -8,7 +8,7 @@ Blazing-fast simulation of advanced 1D population dynamics, based on the Shegues
 
 You will find some examples in this [Jupyter Notebook](./src/Basic-Usage.ipynb).
 
-For example, the following code computes a blow-off solution to the SKT model:
+For example, the following code computes a blow-up solution to the SKT model:
 
 ```python
 import numpy as np

@@ -1,6 +1,7 @@
 # PySpecies
 
 Blazing-fast simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
+
 ![Population dynamics simulation](./misc/SKT.gif)
 
 ## Quickstart

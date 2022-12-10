@@ -1,31 +1,43 @@
 # PySpecies
 
-Ultra-fast simulation of advanced 1D population dynamics. [Theory (French)](Theory.pdf)
-
-Renders the solution of the following system of reaction-diffusion equations:
-
-![System of equations](videos/eq.svg)
-
-where *u* and *v* are the concentrations of competing species.
+Blazing-fast simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
+![Population dynamics simulation](./misc/SKT.gif)
 
 ## Quickstart
-Clone this repository and start editing scenarios in `scenario.py`. For example, the following code renders a cyclic solution of the Lotka-Volterra equations:
 
+You will find some examples in this [Jupyter Notebook](./src/Basic-Usage.ipynb).
+
+For example, the following code computes a blow-off solution to the SKT model:
 ```python
-from lib.population import Population
+import numpy as np
+from pyspecies import pop, models
 
-pop = Population(
-    Space=np.linspace(-1, 1, 1000),
-    u0=lambda x: 1 + x * 0,
-    v0=lambda x: 1 + x * 0,
-    D=np.array([[0, 0, 0], [0, 0, 0]]),
-    R=np.array([[1.1, 0, 0.4], [-0.1, -0.4, 0]]),
+q = pop.Pop(
+    space = (0, 1, 200),   # we need more points
+    u0 = lambda x: 1 + np.cos(2*np.pi*x),
+    v0 = lambda x: 1 + np.sin(2*np.pi*x),
+    model = models.SKT(
+        D=np.array([[1, 0, 1], [1e-3, 0, 0]]),
+        R=np.array([[4, 2, 0], [1, 1, 0]])
+    )
 )
-pop.sim(duration=20, N=500)
-pop.sim(duration=100, N=500)
-pop.anim()
+
+q.sim(duration=0.1, N=200)
+q.sim(duration=2.4, N=200)
+q.anim()
 ```
 
-where *R* and *D* contain the reaction and diffusion coefficients of the species:
+And this renders a cyclic solution of the Lotka-Volterra equations:
+```python
+p = pop.Pop(
+    space = (0, 1, 10),      # lower bound, upper bound, number of points
+    u0 = lambda x: 1 + 0*x,  # IC for prey
+    v0 = lambda x: 1 + 0*x,  # IC for predator
+    model = models.LV(1.1, 0.4, 0.4, 0.1)
+)
 
-![Matrices](videos/matrices.svg)
+p.sim(duration=20, N=200)
+p.sim(duration=100, N=200)
+
+p.anim()
+```

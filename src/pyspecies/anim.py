@@ -17,16 +17,16 @@ def Animate(Space, Xlist, Tlist, length=7, text=""):
 
     # Compute plot axis size
     xmin, xmax = np.min(Space), np.max(Space)
-    padx = (xmax - xmin) * .05
+    padx = (xmax - xmin) * 0.05
     ymin, ymax = np.min(Xlist), np.max(Xlist)
-    pady = (ymax - ymin) * .05
+    pady = (ymax - ymin) * 0.05
 
     ax.set_xlim(xmin - padx, xmax + padx)
     ax.set_ylim(ymin - pady, ymax + 2 * pady)
 
     subt = ax.text(
-        .5,
-        .95,
+        0.5,
+        0.95,
         "",
         horizontalalignment="center",
         verticalalignment="center",

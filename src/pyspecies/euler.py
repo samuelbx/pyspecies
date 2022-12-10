@@ -59,7 +59,7 @@ def BackwardEuler(
     for n in tqdm(range(1, len(Time)), "Simulation in progress"):
         Xm = X_list[-1].copy()
         Xk = Xm.copy()
-        dt = Time[n] - Time[n-1]
+        dt = Time[n] - Time[n - 1]
 
         # Multivariate Newton-Raphson method with sparse jacobian
         for _ in range(max_iter):

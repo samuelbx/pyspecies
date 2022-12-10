@@ -8,6 +8,7 @@ Blazing-fast simulation of advanced 1D population dynamics, based on the Shegues
 You will find some examples in this [Jupyter Notebook](./src/Basic-Usage.ipynb).
 
 For example, the following code computes a blow-off solution to the SKT model:
+
 ```python
 import numpy as np
 from pyspecies import pop, models
@@ -28,6 +29,7 @@ q.anim()
 ```
 
 And this renders a cyclic solution of the Lotka-Volterra equations:
+
 ```python
 p = pop.Pop(
     space = (0, 1, 10),      # lower bound, upper bound, number of points

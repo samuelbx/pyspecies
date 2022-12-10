@@ -2,12 +2,11 @@ import numpy as np
 
 from pyspecies.anim import Animate
 from pyspecies.euler import BackwardEuler
-from pyspecies.utils import UVtoX
 from pyspecies.models import SKT
+from pyspecies.utils import UVtoX
 
 
 class Pop:
-
     def __init__(self, space: tuple, u0, v0, model: SKT):
         self.D, self.R = model.D, model.R
         self.Space = np.linspace(space[0], space[1], space[2])
@@ -21,7 +20,7 @@ class Pop:
         self.Tlist = np.append(self.Tlist, self.Tlist[-1] + Time)
         X0 = self.Xlist[-1].copy()
         self.Xlist = self.Xlist + BackwardEuler(X0, Time, self.Space, self.D, self.R)
-    
+
     def resetAnim(self):
         self.Xlist = [self.Xlist[0]]
         self.Tlist = [self.Tlist[0]]

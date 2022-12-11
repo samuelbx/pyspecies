@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pyspecies.utils import XtoUV
+from pyspecies._utils import XtoUV
 
 
 def Animate(Space, Xlist, Tlist, length=7, text=""):

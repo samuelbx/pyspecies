@@ -7,7 +7,8 @@ q = pop.Pop(
     u0=lambda x: 1 + np.cos(2 * np.pi * x),
     v0=lambda x: 1 + np.sin(2 * np.pi * x),
     model=models.SKT(
-        D=np.array([[1, 0, 1], [1e-3, 0, 0]]), R=np.array([[4, 2, 0], [1, 1, 0]])
+        D=np.array([[1, 0, 1], [1e-3, 0, 0]]),
+        R=np.array([[4, 2, 0], [1, 1, 0]])
     ),
 )
 

@@ -3,7 +3,7 @@ import scipy.sparse as sp
 from scipy.sparse.linalg import spsolve
 from tqdm import tqdm
 
-from pyspecies.utils import J2, MergeDiagonals, XtoUV, f, mu, nu
+from pyspecies._utils import J2, MergeDiagonals, XtoUV, f, mu, nu
 
 
 def funcAndJac(

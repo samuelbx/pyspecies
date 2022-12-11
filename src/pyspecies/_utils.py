@@ -1,12 +1,12 @@
 import numpy as np
 
 
-def XtoUV(X):
+def XtoUV(X: np.ndarray):
     K = len(X) // 2
     return X[:K], X[K:]
 
 
-def UVtoX(U, V):
+def UVtoX(U: np.ndarray, V: np.ndarray):
     K = len(U)
     zeroes = np.zeros(2 * K)
     zeroes[:K] = U
@@ -14,7 +14,7 @@ def UVtoX(U, V):
     return zeroes
 
 
-def MergeDiagonals(P, Q, R, S):
+def MergeDiagonals(P: list, Q: list, R: list, S: list):
     return [
         [Q[0]],
         Q[1],
@@ -30,7 +30,7 @@ def MergeDiagonals(P, Q, R, S):
     ]
 
 
-def f(i, A, B, D2, R2):
+def f(i, A: np.ndarray, B: np.ndarray, D2: np.ndarray, R2: np.ndarray):
     A2, AB = A * A, A * B
     center = (
         ((1 - R2[i, 0] + 2 * D2[i, 0]) * A)
@@ -41,11 +41,11 @@ def f(i, A, B, D2, R2):
     return center - np.roll(border, 1) - np.roll(border, -1)
 
 
-def mu(i, A, B, D2):
+def mu(i, A: np.ndarray, B: np.ndarray, D2: np.ndarray):
     return D2[i, 0] * np.ones(len(A)) + 2 * D2[i, i + 1] * A + D2[i, 2 - i] * B
 
 
-def nu(i, A, B, D2, R2):
+def nu(i, A: np.ndarray, B: np.ndarray, D2: np.ndarray, R2: np.ndarray):
     return (
         (1 - R2[i, 0] + 2 * D2[i, 0]) * np.ones(len(A))
         + 2 * (R2[i, i + 1] + 2 * D2[i, i + 1]) * A
@@ -53,7 +53,7 @@ def nu(i, A, B, D2, R2):
     )
 
 
-def J2(i, A, D2, R2):
+def J2(i, A: np.ndarray, D2: np.ndarray, R2: np.ndarray):
     DA = D2[i, 2 - i] * A
     return [
         -DA[-1],

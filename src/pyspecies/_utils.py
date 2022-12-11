@@ -1,20 +1,48 @@
 import numpy as np
 
 
-def XtoUV(X: np.ndarray):
+def XtoUV(X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Recovers the concentration vector of species U and V from the concatenated vector.
+
+    Args:
+        X (np.ndarray): Concatenated vector.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: Species concentration vectors.
+    """
     K = len(X) // 2
     return X[:K], X[K:]
 
 
-def UVtoX(U: np.ndarray, V: np.ndarray):
+def UVtoX(U: np.ndarray, V: np.ndarray) -> np.ndarray:
+    """Concatenates the concentration vector of species U and V.
+
+    Args:
+        U (np.ndarray): First species concentration vector.
+        V (np.ndarray): Second species concentration vector.
+
+    Returns:
+        np.ndarray: Concatenated vectors.
+    """
     K = len(U)
-    zeroes = np.zeros(2 * K)
-    zeroes[:K] = U
-    zeroes[K:] = V
-    return zeroes
+    X = np.zeros(2 * K)
+    X[:K] = U
+    X[K:] = V
+    return X
 
 
-def MergeDiagonals(P: list, Q: list, R: list, S: list):
+def merge_diags(P: list[list], Q: list[list], R: list[list], S: list[list]):
+    """Assemble the list of diagonals of the Jacobian from block data.
+
+    Args:
+        P (list[list]): List of diagonals for upper-left Jacobian block.
+        Q (list[list]): List of diagonals for upper-right Jacobian block.
+        R (list[list]): List of diagonals for lower-left Jacobian block.
+        S (list[list]): List of diagonals for lower-right Jacobian block.
+
+    Returns:
+        list[list]: List of diagonals for full Jacobian.
+    """
     return [
         Q[0],
         Q[1],
@@ -30,35 +58,92 @@ def MergeDiagonals(P: list, Q: list, R: list, S: list):
     ]
 
 
-def f(i: int, A: np.ndarray, B: np.ndarray, D2: np.ndarray, R2: np.ndarray):
+def f(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray) -> np.ndarray:
+    """Used to compute the function whose roots are looked for.
+
+    See the theory for more details.
+
+    Args:
+        i (int): Species index.
+        A (np.ndarray): First concentration vector.
+        B (np.ndarray): Second concentration vector.
+        D (np.ndarray): Normalized diffusion matrix.
+        R (np.ndarray): Normalized reaction matrix.
+
+    Returns:
+        np.ndarray: Output vector.
+    """
     A2, AB = A * A, A * B
     center = (
-        ((1 - R2[i, 0] + 2 * D2[i, 0]) * A)
-        + ((R2[i, i + 1] + 2 * D2[i, i + 1]) * A2)
-        + ((R2[i, 2 - i] + 2 * D2[i, 2 - i]) * AB)
+        ((1 - R[i, 0] + 2 * D[i, 0]) * A)
+        + ((R[i, i + 1] + 2 * D[i, i + 1]) * A2)
+        + ((R[i, 2 - i] + 2 * D[i, 2 - i]) * AB)
     )
-    border = D2[i, 0] * A + D2[i, i + 1] * A2 + D2[i, 2 - i] * AB
+    border = D[i, 0] * A + D[i, i + 1] * A2 + D[i, 2 - i] * AB
     return center - np.roll(border, 1) - np.roll(border, -1)
 
 
-def mu(i: int, A: np.ndarray, B: np.ndarray, D2: np.ndarray):
-    return D2[i, 0] * np.ones(len(A)) + 2 * D2[i, i + 1] * A + D2[i, 2 - i] * B
+def mu(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray) -> np.ndarray:
+    """Used to compute the Jacobian.
+
+    See the theory for more details.
+
+    Args:
+        i (int): Species index.
+        A (np.ndarray): First concentration vector.
+        B (np.ndarray): Second concentration vector.
+        D (np.ndarray): Normalized diffusion matrix.
+
+    Returns:
+        np.ndarray: Output vector.
+    """
+    return D[i, 0] * np.ones(len(A)) + 2 * D[i, i + 1] * A + D[i, 2 - i] * B
 
 
-def nu(i: int, A: np.ndarray, B: np.ndarray, D2: np.ndarray, R2: np.ndarray):
+def nu(
+    i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray
+) -> np.ndarray:
+    """Used to compute the Jacobian.
+
+    See the theory for more details.
+
+    Args:
+        i (int): Species index.
+        A (np.ndarray): First concentration vector.
+        B (np.ndarray): Second concentration vector.
+        D (np.ndarray): Normalized diffusion matrix.
+        R (np.ndarray): Normalized reaction matrix.
+
+    Returns:
+        np.ndarray: Output vector.
+    """
     return (
-        (1 - R2[i, 0] + 2 * D2[i, 0]) * np.ones(len(A))
-        + 2 * (R2[i, i + 1] + 2 * D2[i, i + 1]) * A
-        + (R2[i, 2 - i] + 2 * D2[i, 2 - i]) * B
+        (1 - R[i, 0] + 2 * D[i, 0]) * np.ones(len(A))
+        + 2 * (R[i, i + 1] + 2 * D[i, i + 1]) * A
+        + (R[i, 2 - i] + 2 * D[i, 2 - i]) * B
     )
 
 
-def J2(i: int, A: np.ndarray, D2: np.ndarray, R2: np.ndarray):
-    DA = D2[i, 2 - i] * A
+def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray):
+    """Used to compute two of the Jacobian's blocks.
+
+    See the theory for more details.
+
+    Args:
+        i (int): Species index.
+        A (np.ndarray): First concentration vector.
+        B (np.ndarray): Second concentration vector.
+        D (np.ndarray): Normalized diffusion matrix.
+        R (np.ndarray): Normalized reaction matrix.
+
+    Returns:
+        np.ndarray: Output vector.
+    """
+    DA = D[i, 2 - i] * A
     return [
         [-DA[-1]],
         -DA[1:],
-        R2[i, 2 - i] * A + 2 * DA,
+        R[i, 2 - i] * A + 2 * DA,
         -DA[:-1],
         [-DA[0]],
     ]

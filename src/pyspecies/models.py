@@ -49,6 +49,8 @@ class CLV(SKT):
     ):
         if not (r1 >= 0 and r2 >= 0 and s12 >= 0 and s21 >= 0):
             raise ValueError("Coefficients must all be positive")
+        if not (K1 > 0 and K2 > 0):
+            raise ValueError("Carrying capacities must be > 0")
         self.D = np.zeros((2, 3))
         self.R = np.array(
             [[r1, -r1 / K1, -r1 * s12 / K1], [r2, -r2 * s21 / K2, -r2 / K2]]

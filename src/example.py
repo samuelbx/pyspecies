@@ -13,5 +13,5 @@ q = pop.Pop(
 )
 
 q.sim(duration=0.1, N=200)
-q.sim(duration=2.4, N=200)
+q.sim(duration=2.9, N=200)
 q.anim()

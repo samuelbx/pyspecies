@@ -2,11 +2,11 @@ import numpy as np
 
 
 class SKT:
-    """Sheguesada Kawazaki Teramoto population interaction model.
+    """Sheguesada-Kawazaki-Teramoto population interaction model.
 
     Attributes:
-        D (np.ndarray): diffusion coefficients' matrix
-        R (np.ndarray): reaction coefficients' matrix
+        D (np.ndarray): Diffusion matrix.
+        R (np.ndarray): Reaction matrix.
     """
 
     def __init__(self, D: np.ndarray, R: np.ndarray):
@@ -14,13 +14,13 @@ class SKT:
 
 
 class LV(SKT):
-    """Lotka-Volterra population interaction model.
+    """Lotka-Volterra population interaction model. Coefficients must all be positive.
 
     Attributes:
-        a (float): prey repoduction rate (>= 0)
-        b (float): prey mortality due to predators (>= 0)
-        c (float): predator reproduction due to eating preys (>= 0)
-        d (float): predator death rate (>= 0)
+        a (float): Prey repoduction rate.
+        b (float): Prey mortality due to predators.
+        c (float): Predator reproduction due to eating preys.
+        d (float): Predator death rate.
     """
 
     def __init__(self, a: float, b: float, c: float, d: float):
@@ -31,17 +31,17 @@ class LV(SKT):
 
 
 class CLV(SKT):
-    """Competitive Lotka-Volterra population interaction model.
+    """Competitive Lotka-Volterra population interaction model. Coefficients must all be positive.
 
     See https://en.wikipedia.org/wiki/Competitive_Lotka-Volterra_equations.
 
     Attributes:
-        r1 (float): reproduction rate for (1) (positive)
-        r2 (float): reproduction rate for (2) (positive)
-        K1 (float): carrying capacity for (1) (positive)
-        K2 (float): carrying capacity for (2) (positive)
-        s12 (float): competitive effect (1) has on (2) (positive)
-        s21 (float): competitive effect (2) has on (1) (positive)
+        r1 (float): Reproduction rate for (1).
+        r2 (float): Reproduction rate for (2).
+        K1 (float): Carrying capacity for (1).
+        K2 (float): Carrying capacity for (2).
+        s12 (float): Competitive effect (1) has on (2).
+        s21 (float): Competitive effect (2) has on (1).
     """
 
     def __init__(

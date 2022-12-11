@@ -73,6 +73,7 @@ def f(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray) -> np.
     Returns:
         np.ndarray: Output vector.
     """
+    assert i == 0 or i == 1
     A2, AB = A * A, A * B
     center = (
         ((1 - R[i, 0] + 2 * D[i, 0]) * A)
@@ -97,6 +98,7 @@ def mu(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Output vector.
     """
+    assert i == 0 or i == 1
     return D[i, 0] * np.ones(len(A)) + 2 * D[i, i + 1] * A + D[i, 2 - i] * B
 
 
@@ -117,6 +119,7 @@ def nu(
     Returns:
         np.ndarray: Output vector.
     """
+    assert i == 0 or i == 1
     return (
         (1 - R[i, 0] + 2 * D[i, 0]) * np.ones(len(A))
         + 2 * (R[i, i + 1] + 2 * D[i, i + 1]) * A

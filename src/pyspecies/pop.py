@@ -62,8 +62,8 @@ class Pop:
 
     def resetAnim(self):
         """Only keeps the last calculated time step so that the next animation starts from it."""
-        self.Xlist = [self.Xlist[0]]
-        self.Tlist = [self.Tlist[0]]
+        self.Xlist = [self.Xlist[-1]]
+        self.Tlist = [self.Tlist[-1]]
 
     def anim(self, length: float = 7):
         """Shows a nice Matplotlib animation of the steps simulated so far.

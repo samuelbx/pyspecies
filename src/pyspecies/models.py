@@ -17,18 +17,17 @@ class LV(SKT):
     """Lotka-Volterra population interaction model.
 
     Attributes:
-        alpha (float): prey repoduction rate (>= 0)
-        beta (float): prey mortality due to predators (>= 0)
-        delta (float): predator reproduction due to eating preys (>= 0)
-        gamma (float): predator death rate (>= 0)
+        a (float): prey repoduction rate (>= 0)
+        b (float): prey mortality due to predators (>= 0)
+        c (float): predator reproduction due to eating preys (>= 0)
+        d (float): predator death rate (>= 0)
     """
 
-    def __init__(self, alpha: float, beta: float, delta: float, gamma: float):
-        assert (
-            alpha >= 0 and beta >= 0 and delta >= 0 and gamma >= 0
-        ), "Coefficients must all be positive"
+    def __init__(self, a: float, b: float, c: float, d: float):
+        if not (a >= 0 and b >= 0 and c >= 0 and d >= 0):
+            raise ValueError("Coefficients must all be positive")
         self.D = np.array([[0, 0, 0], [0, 0, 0]])
-        self.R = np.array([[alpha, 0, beta], [-gamma, -delta, 0]])
+        self.R = np.array([[a, 0, b], [-d, -c, 0]])
 
 
 class CLV(SKT):
@@ -48,9 +47,8 @@ class CLV(SKT):
     def __init__(
         self, r1: float, r2: float, K1: float, K2: float, s12: float, s21: float
     ):
-        assert (
-            r1 >= 0 and r2 >= 0 and s12 >= 0 and s21 >= 0
-        ), "Coefficients must all be positive"
+        if not (r1 >= 0 and r2 >= 0 and s12 >= 0 and s21 >= 0):
+            raise ValueError("Coefficients must all be positive")
         self.D = np.array([[0, 0, 0], [0, 0, 0]])
         self.R = np.array(
             [[r1, -r1 / K1, -r1 * s12 / K1], [r2, -r2 * s21 / K2, -r2 / K2]]

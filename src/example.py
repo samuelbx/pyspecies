@@ -3,7 +3,7 @@ import numpy as np
 from pyspecies import models, pop
 
 q = pop.Pop(
-    space=(0, 1, 200),  # we need more points
+    space=(0, 1, 200),
     u0=lambda x: 1 + np.cos(2 * np.pi * x),
     v0=lambda x: 1 + np.sin(2 * np.pi * x),
     model=models.SKT(

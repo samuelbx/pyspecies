@@ -19,8 +19,8 @@ def funcAndJac(
 
     # Compute jacobian
     r, s = mu(0, U, V, D2), mu(1, V, U, D2)
-    J1 = [-r[-1], -r[1:], nu(0, U, V, D2, R2), -r[:-1], -r[0]]
-    J4 = [-s[-1], -s[1:], nu(1, V, U, D2, R2), -s[:-1], -s[0]]
+    J1 = [[-r[-1]], -r[1:], nu(0, U, V, D2, R2), -r[:-1], [-r[0]]]
+    J4 = [[-s[-1]], -s[1:], nu(1, V, U, D2, R2), -s[:-1], [-s[0]]]
     Jg = sp.diags(
         MergeDiagonals(J1, J2(0, U, D2, R2), J2(1, V, D2, R2), J4),
         [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1],
@@ -31,12 +31,9 @@ def funcAndJac(
 
 
 def CuthillPermutation(K):
-    J1 = [10, [11] * (K - 1), [12] * (K), [13] * (K - 1), 14]
-    J2 = [20, [21] * (K - 1), [22] * (K), [23] * (K - 1), 24]
-    J3 = [30, [31] * (K - 1), [32] * (K), [33] * (K - 1), 34]
-    J4 = [40, [41] * (K - 1), [42] * (K), [43] * (K - 1), 44]
+    d = [[1], [1] * (K - 1), [1] * (K), [1] * (K - 1), [1]]
     M = sp.diags(
-        MergeDiagonals(J1, J2, J3, J4),
+        MergeDiagonals(d, d, d, d),
         [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1],
         format="csr",
     )
@@ -49,8 +46,8 @@ def BackwardEuler(
     Space: np.ndarray,
     D: np.ndarray,
     R: np.ndarray,
-    newtThreshold=1e-4,
-    max_iter=1000,
+    newtThreshold: float = 1e-4,
+    max_iter: int = 1000,
 ):
     X_list = [X0]
     perm = CuthillPermutation(len(X0) // 2)

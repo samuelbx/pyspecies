@@ -32,12 +32,12 @@ def Animate(Space, Xlist, Tlist, length=7, text=""):
         verticalalignment="center",
         transform=ax.transAxes,
     )
-    if text:
-        ax.set_title(text)
+    # TODO: better style for title text
+    # if text:
+    #     ax.set_title(text)
 
     def anim(i):
         j = ceil(i * (len(Xlist) - 1) / (length * 50 - 1))
-
         U, V = XtoUV(Xlist[j])
         Uarea = ax.fill_between(Space, U, color="#f44336", alpha=0.5)
         Varea = ax.fill_between(Space, V, color="#3f51b5", alpha=0.5)
@@ -46,7 +46,6 @@ def Animate(Space, Xlist, Tlist, length=7, text=""):
                 str(np.round(Tlist[j], decimals=2))
             )
         )
-
         return Uarea, Varea, subt
 
     ani = animation.FuncAnimation(

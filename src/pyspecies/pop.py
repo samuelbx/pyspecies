@@ -1,5 +1,5 @@
-from typing import Callable
 import warnings
+from typing import Callable
 
 import numpy as np
 
@@ -27,11 +27,14 @@ class Pop:
             raise ValueError("space must contain 3 elements: min_x, max_x, no_points")
         if space[0] > space[1]:
             raise ValueError("max_x must be greater than min_x")
-        if space[2] < 10:
-            warnings.warn("There should be at least 10 points in space for the program to work. Number of points has automatically been set to 10.")
-            space[2] = 10
+        no_space = space[2]
+        if no_space < 10:
+            warnings.warn(
+                "There should be at least 10 points in space for the program to work. Number of points has automatically been set to 10."
+            )
+            no_space = 10
         self.D, self.R = model.D, model.R
-        self.Space = np.linspace(space[0], space[1], space[2])
+        self.Space = np.linspace(space[0], space[1], no_space)
 
         X0 = UVtoX(u0(self.Space), v0(self.Space))
         if not (X0 >= 0).all():

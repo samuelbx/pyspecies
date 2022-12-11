@@ -2,6 +2,7 @@ import numpy as np
 
 from pyspecies import models, pop
 
+# Define population and interaction model
 q = pop.Pop(
     space=(0, 1, 200),
     u0=lambda x: 1 + np.cos(2 * np.pi * x),
@@ -12,6 +13,12 @@ q = pop.Pop(
     ),
 )
 
+# Run two simulation passes at different speeds
 q.sim(duration=0.1, N=200)
 q.sim(duration=2.9, N=200)
+
+# Animate the result
 q.anim()
+
+# Plot a heatmap of the dominating species across time
+q.heatmap()

@@ -1,13 +1,14 @@
 # PySpecies
 
 Blazing-fast simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
+
 ![Population dynamics simulation](./misc/SKT.gif)
 
 ## Quickstart
 
 You will find some examples in this [Jupyter Notebook](./src/Basic-Usage.ipynb).
 
-For example, the following code computes a blow-off solution to the SKT model:
+For example, the following code computes a blow-up solution to the SKT model:
 
 ```python
 import numpy as np
@@ -40,6 +41,5 @@ p = pop.Pop(
 
 p.sim(duration=20, N=200)
 p.sim(duration=100, N=200)
-
 p.anim()
 ```

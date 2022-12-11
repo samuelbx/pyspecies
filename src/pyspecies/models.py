@@ -26,7 +26,7 @@ class LV(SKT):
     def __init__(self, a: float, b: float, c: float, d: float):
         if not (a >= 0 and b >= 0 and c >= 0 and d >= 0):
             raise ValueError("Coefficients must all be positive")
-        self.D = np.array([[0, 0, 0], [0, 0, 0]])
+        self.D = np.zeros((2, 3))
         self.R = np.array([[a, 0, b], [-d, -c, 0]])
 
 
@@ -49,7 +49,7 @@ class CLV(SKT):
     ):
         if not (r1 >= 0 and r2 >= 0 and s12 >= 0 and s21 >= 0):
             raise ValueError("Coefficients must all be positive")
-        self.D = np.array([[0, 0, 0], [0, 0, 0]])
+        self.D = np.zeros((2, 3))
         self.R = np.array(
             [[r1, -r1 / K1, -r1 * s12 / K1], [r2, -r2 * s21 / K2, -r2 / K2]]
         )

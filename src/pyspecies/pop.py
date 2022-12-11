@@ -1,11 +1,12 @@
 import warnings
 from typing import Callable
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from pyspecies._anim import Animate
 from pyspecies._euler import BackwardEuler
-from pyspecies._utils import UVtoX
+from pyspecies._utils import UVtoX, XtoUV
 from pyspecies.models import SKT
 
 
@@ -80,3 +81,23 @@ class Pop:
             str(self.D).replace("\n", ""), str(self.R).replace("\n", ""), K, N - 2
         )
         Animate(self.Space, self.Xlist, self.Tlist, length=length, text=txt)
+
+    def heatmap(self):
+        """Shows a nice 2D heatmap of the dominating species over time and space."""
+        grid = np.zeros((len(self.Tlist), len(self.Space)))
+        for i, X in enumerate(self.Xlist):
+            U, V = XtoUV(X)
+            grid[i, :] = U - V
+
+        grid = grid[:-1, :-1]
+        fig, ax = plt.subplots()
+        Ubound, Vbound = max(grid.max(), 0), max(-grid.min(), 0)
+        bound = max(Ubound, Vbound)
+        c = ax.pcolormesh(
+            self.Space, self.Tlist, grid, cmap="RdBu_r", vmin=-bound, vmax=bound
+        )
+        ax.set_title("Domination heatmap (u: red, v: blue)")
+        ax.set_xlabel("Space")
+        ax.set_ylabel("Time")
+        fig.colorbar(c, ax=ax)
+        plt.show()

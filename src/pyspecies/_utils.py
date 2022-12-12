@@ -31,7 +31,7 @@ def UVtoX(U: np.ndarray, V: np.ndarray) -> np.ndarray:
     return X
 
 
-def merge_diags(P: list[list], Q: list[list], R: list[list], S: list[list]):
+def merge_diags(P: list[list], Q: list[list], R: list[list], S: list[list]) -> list:
     """Assemble the list of diagonals of the Jacobian from block data.
 
     Args:
@@ -127,7 +127,7 @@ def nu(
     )
 
 
-def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray):
+def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray) -> list:
     """Used to compute two of the Jacobian's blocks.
 
     See the theory for more details.
@@ -142,6 +142,7 @@ def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray):
     Returns:
         np.ndarray: Output vector.
     """
+    assert i == 0 or i == 1
     DA = D[i, 2 - i] * A
     return [
         [-DA[-1]],

@@ -33,7 +33,7 @@ class Pop:
         with_stochastic: bool = False,
         no_bins: int = 15,
         tolerance: float = 0.05,
-    ):
+    ) -> None:
         if not (0 <= tolerance and tolerance <= 0.1):
             raise ValueError(
                 "Tolerance should be set between 0 (no approximation) and 0.1 (important approximation)."
@@ -79,7 +79,7 @@ class Pop:
             plt.plot(self.Space, u0(self.Space))
             plt.show()
 
-    def sim(self, duration: float, N: int = 100):
+    def sim(self, duration: float, N: int = 100) -> None:
         """Move the simulation forward by a given duration and precision.
 
         Args:
@@ -108,7 +108,7 @@ class Pop:
             )
             self.Xlist_s += linearize_time(X0_s, steps, Tsteps, self.Tlist)
 
-    def anim(self, length: float = 7):
+    def anim(self, length: float = 7) -> None:
         """Shows a nice Matplotlib animation of the steps simulated so far.
 
         Args:
@@ -170,14 +170,14 @@ class Pop:
         )
         plt.show()
 
-    def resetAnim(self):
+    def resetAnim(self) -> None:
         """Only keeps the last calculated time step so that the next animation starts from it."""
-        self.Xlist = [self.Xlist[-1]]
-        self.Tlist = [self.Tlist[-1]]
+        self.Xlist = self.Xlist[:-1]
+        self.Tlist = self.Tlist[:-1]
         if self.with_stochastic:
             self.Xlist_s = [self.Xlist_s[-1]]
 
-    def heatmap(self):
+    def heatmap(self) -> None:
         """Shows a nice 2D heatmap of the dominating species over time and space."""
         # Build heatmap grid
         grid = np.zeros((len(self.Tlist), len(self.Space)))

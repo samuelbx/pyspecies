@@ -10,8 +10,7 @@ q = pop.Pop(
     model=models.SKT(
         D=np.array([[1, 0, 1], [1e-3, 0, 0]]),
         R=np.array([[0, 0, 0], [0, 0, 0]])
-    ),
-    with_stochastic=True
+    )
 )
 
 # Run two simulation passes at different speeds

@@ -31,17 +31,19 @@ def UVtoX(U: np.ndarray, V: np.ndarray) -> np.ndarray:
     return X
 
 
-def merge_diags(P: list[list], Q: list[list], R: list[list], S: list[list]) -> list:
+def merge_diags(
+    P: list[np.ndarray], Q: list[np.ndarray], R: list[np.ndarray], S: list[np.ndarray]
+) -> list[np.ndarray]:
     """Assemble the list of diagonals of the Jacobian from block data.
 
     Args:
-        P (list[list]): List of diagonals for upper-left Jacobian block.
-        Q (list[list]): List of diagonals for upper-right Jacobian block.
-        R (list[list]): List of diagonals for lower-left Jacobian block.
-        S (list[list]): List of diagonals for lower-right Jacobian block.
+        P (list[np.ndarray]): List of diagonals for upper-left Jacobian block.
+        Q (list[np.ndarray]): List of diagonals for upper-right Jacobian block.
+        R (list[np.ndarray]): List of diagonals for lower-left Jacobian block.
+        S (list[np.ndarray]): List of diagonals for lower-right Jacobian block.
 
     Returns:
-        list[list]: List of diagonals for full Jacobian.
+        list[np.ndarray]: List of diagonals for full Jacobian.
     """
     return [
         Q[0],
@@ -127,7 +129,9 @@ def nu(
     )
 
 
-def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray) -> list:
+def block_diags(
+    i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray
+) -> list[np.ndarray]:
     """Used to compute two of the Jacobian's blocks.
 
     See the theory for more details.
@@ -135,19 +139,18 @@ def block_diags(i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray) -> list:
     Args:
         i (int): Species index.
         A (np.ndarray): First concentration vector.
-        B (np.ndarray): Second concentration vector.
         D (np.ndarray): Normalized diffusion matrix.
         R (np.ndarray): Normalized reaction matrix.
 
     Returns:
-        np.ndarray: Output vector.
+        list[np.ndarray]: List of diagonals for the specified block.
     """
     assert i == 0 or i == 1
     DA = D[i, 2 - i] * A
     return [
-        [-DA[-1]],
+        -DA[-1:],
         -DA[1:],
         R[i, 2 - i] * A + 2 * DA,
         -DA[:-1],
-        [-DA[0]],
+        -DA[:1],
     ]

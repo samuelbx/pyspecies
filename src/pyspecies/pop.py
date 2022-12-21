@@ -5,8 +5,10 @@ from typing import Callable
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from scipy.integrate import quad
 
 from pyspecies._euler import back_euler
+from pyspecies._stochastic import compute_steps, linearize_time
 from pyspecies._utils import UVtoX, XtoUV
 from pyspecies.models import SKT
 
@@ -23,26 +25,59 @@ class Pop:
     """
 
     def __init__(
-        self, u0: Callable, v0: Callable, model: SKT, space: tuple = (0, 1, 200)
+        self,
+        u0: Callable,
+        v0: Callable,
+        model: SKT,
+        space: tuple = (0, 1, 200),
+        with_stochastic: bool = False,
+        no_bins: int = 15,
+        tolerance: float = 0.05,
     ):
+        if not (0 <= tolerance and tolerance <= 0.1):
+            raise ValueError(
+                "Tolerance should be set between 0 (no approximation) and 0.1 (important approximation)."
+            )
         if len(space) != 3:
-            raise ValueError("space must contain 3 elements: min_x, max_x, no_points")
+            raise ValueError("space must contain 3 elements: min_x, max_x, no_points.")
         if space[0] > space[1]:
-            raise ValueError("max_x must be greater than min_x")
+            raise ValueError("max_x must be greater than min_x.")
         no_space = space[2]
         if no_space < 10:
             warnings.warn(
                 "There should be at least 10 points in space for the program to work. Number of points has automatically been set to 10."
             )
             no_space = 10
+        # Store environment data
         self.D, self.R = model.D, model.R
         self.Space = np.linspace(space[0], space[1], no_space)
 
+        # Compute initial population concentration vectors
         X0 = UVtoX(u0(self.Space), v0(self.Space))
         if not (X0 >= 0).all():
             raise ValueError("Initial conditions must be positive")
         self.Xlist = [X0]
         self.Tlist = np.array([0])
+
+        # Stochastic simulation parameters
+        self.with_stochastic = with_stochastic
+        self.no_bins = no_bins
+        self.tolerance = tolerance
+
+        # Compute initial conditions for stochastic simulation if required
+        if self.with_stochastic:
+            space_s = np.linspace(space[0], space[1], no_bins + 1)
+            dx = space_s[1] - space_s[0]
+            U0, V0 = np.zeros(no_bins), np.zeros(no_bins)
+            for i in range(no_bins):
+                U0[i] = quad(u0, space_s[i], space_s[i + 1])[0] / dx
+                V0[i] = quad(u0, space_s[i], space_s[i + 1])[0] / dx
+            X0_s = (U0, V0)
+            self.Xlist_s = [X0_s]
+            self.Space_s = space_s[:-1] + dx / 2
+            plt.bar(self.Space_s, U0, dx)
+            plt.plot(self.Space, u0(self.Space))
+            plt.show()
 
     def sim(self, duration: float, N: int = 100):
         """Move the simulation forward by a given duration and precision.
@@ -61,8 +96,17 @@ class Pop:
 
         # Continue the simulation and store its results
         X0 = self.Xlist[-1].copy()
-        self.Xlist = self.Xlist + back_euler(X0, Time, self.Space, self.D, self.R)
+        self.Xlist += back_euler(X0, Time, self.Space, self.D, self.R)
         self.Tlist = np.append(self.Tlist, self.Tlist[-1] + Time)
+
+        # Stochastic simulation
+        if self.with_stochastic:
+            X0_s = self.Xlist_s[-1]
+            dx = self.Space_s[1] - self.Space_s[0]
+            steps, Tsteps = compute_steps(
+                X0_s, duration, self.D, self.R, self.tolerance, dx
+            )
+            self.Xlist_s += linearize_time(X0_s, steps, Tsteps, self.Tlist)
 
     def anim(self, length: float = 7):
         """Shows a nice Matplotlib animation of the steps simulated so far.
@@ -82,6 +126,7 @@ class Pop:
         ax.set_ylabel("Concentrations")
 
         # Define plot axis size
+        tmax = np.max(self.Tlist)
         xmin, xmax = np.min(self.Space), np.max(self.Space)
         padx = (xmax - xmin) * 0.05
         ymin, ymax = np.min(self.Xlist), np.max(self.Xlist)
@@ -111,8 +156,9 @@ class Pop:
 
             # Update text for simulation time
             time_text.set_text(
-                "Population dynamics simulation at t={}s".format(
-                    str(np.round(self.Tlist[j], decimals=2))
+                "Simulation at t={}s ({}%)".format(
+                    str(np.round(self.Tlist[j], decimals=2)),
+                    str(int(100 * self.Tlist[j] / tmax)),
                 )
             )
 
@@ -128,6 +174,8 @@ class Pop:
         """Only keeps the last calculated time step so that the next animation starts from it."""
         self.Xlist = [self.Xlist[-1]]
         self.Tlist = [self.Tlist[-1]]
+        if self.with_stochastic:
+            self.Xlist_s = [self.Xlist_s[-1]]
 
     def heatmap(self):
         """Shows a nice 2D heatmap of the dominating species over time and space."""

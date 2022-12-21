@@ -93,7 +93,7 @@ def back_euler(
     # Compute reverse Cuthill-McKee permutation to lower jacobian bandwidth
     perm = cuthill_permutation(len(X0) // 2)
 
-    for n in tqdm(range(1, len(Time)), "Simulation in progress"):
+    for n in tqdm(range(1, len(Time)), "Deterministic simulation"):
         Xm = X_list[-1].copy()
         Xk = Xm.copy()
         dt = Time[n] - Time[n - 1]

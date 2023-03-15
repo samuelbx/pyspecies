@@ -4,21 +4,18 @@ from pyspecies import models, pop
 
 # Define population and interaction model
 q = pop.Pop(
-    space=(0, 20, 200),
-    u0=lambda x: 10*(1 + np.cos(2 * np.pi * x/20)),
-    v0=lambda x: 10*(1 + np.sin(2 * np.pi * x/20)),
+    space=(0, 1, 200),
+    u0=lambda x: 1 + np.cos(2 * np.pi * x),
+    v0=lambda x: 1 + np.sin(2 * np.pi * x),
     model=models.SKT(
-        D=np.array([[1, 0, 1], [1e-3, 0, 0]]),
-        R=np.array([[0, 0, 0], [0, 0, 0]])
-    )
+        D=np.array([[5e-3, 0, 3], [5e-3, 0, 0]]),
+        R=np.array([[5, 3, 1], [2, 1, 3]])
+    ),
 )
 
-# Run two simulation passes at different speeds
-q.sim(duration=0.1, N=200)
-q.sim(duration=2.9, N=200)
+# Simulate with increasing speeds
+for i in range(-2, 2):
+    q.sim(duration=2*10**i, N=100)
 
 # Animate the result
 q.anim()
-
-# Plot a heatmap of the dominating species across time
-q.heatmap()

@@ -9,7 +9,7 @@ class SKT:
         R (np.ndarray): Reaction matrix.
     """
 
-    def __init__(self, D: np.ndarray, R: np.ndarray):
+    def __init__(self, D: np.ndarray, R: np.ndarray) -> None:
         self.D, self.R = D, R
 
 
@@ -23,7 +23,7 @@ class LV(SKT):
         d (float): Predator death rate.
     """
 
-    def __init__(self, a: float, b: float, c: float, d: float):
+    def __init__(self, a: float, b: float, c: float, d: float) -> None:
         if not (a >= 0 and b >= 0 and c >= 0 and d >= 0):
             raise ValueError("Coefficients must all be positive")
         self.D = np.zeros((2, 3))
@@ -46,7 +46,7 @@ class CLV(SKT):
 
     def __init__(
         self, r1: float, r2: float, K1: float, K2: float, s12: float, s21: float
-    ):
+    ) -> None:
         if not (r1 >= 0 and r2 >= 0 and s12 >= 0 and s21 >= 0):
             raise ValueError("Coefficients must all be positive")
         if not (K1 > 0 and K2 > 0):

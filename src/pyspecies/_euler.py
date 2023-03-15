@@ -32,13 +32,13 @@ def func_and_jac(
 
     # Compute jacobian blocks
     r, s = mu(0, U, V, D2), mu(1, V, U, D2)
-    P = [[-r[-1]], -r[1:], nu(0, U, V, D2, R2), -r[:-1], [-r[0]]]
-    Q, R = block_diags(0, U, D2, R2), block_diags(1, V, D2, R2)
-    S = [[-s[-1]], -s[1:], nu(1, V, U, D2, R2), -s[:-1], [-s[0]]]
+    JP = [-r[-1:], -r[1:], nu(0, U, V, D2, R2), -r[:-1], -r[:1]]
+    JQ, JR = block_diags(0, U, D2, R2), block_diags(1, V, D2, R2)
+    JS = [-s[-1:], -s[1:], nu(1, V, U, D2, R2), -s[:-1], -s[:1]]
 
     # Build jacobian in diagonal sparse representation
     jac = sp.diags(
-        merge_diags(P, Q, R, S),
+        merge_diags(JP, JQ, JR, JS),
         [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1],
         format="csr",
     )
@@ -55,7 +55,8 @@ def cuthill_permutation(K: int) -> np.ndarray:
     Returns:
         np.ndarray: Array of permuted row and column indices.
     """
-    d = [[1], [1] * (K - 1), [1] * (K), [1] * (K - 1), [1]]
+    a = np.ones(K)
+    d = [a[:1], a[1:], a, a[1:], a[:1]]
     M = sp.diags(
         merge_diags(d, d, d, d),
         [2 * K - 1, K + 1, K, K - 1, 1, 0, -1, -K + 1, -K, -K - 1, -2 * K + 1],
@@ -93,7 +94,7 @@ def back_euler(
     # Compute reverse Cuthill-McKee permutation to lower jacobian bandwidth
     perm = cuthill_permutation(len(X0) // 2)
 
-    for n in tqdm(range(1, len(Time)), "Simulation in progress"):
+    for n in tqdm(range(1, len(Time)), "Deterministic simulation"):
         Xm = X_list[-1].copy()
         Xk = Xm.copy()
         dt = Time[n] - Time[n - 1]

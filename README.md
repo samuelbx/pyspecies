@@ -1,19 +1,29 @@
 # PySpecies
 
-Blazing-fast simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
+Blazing-fast simulation of advanced 1D population dynamics.
 
-![Population dynamics simulation](./misc/SKT.gif)
+Based on the Shigesada Kawasaki Teramoto (SKT) reaction-diffusion model. [[PubMed '79]](https://pubmed.ncbi.nlm.nih.gov/513804/)
 
-## Quickstart
+![Population dynamics simulation](./misc/example.gif)
 
-For example, the following code computes a non-trivial solution to the SKT model:
+## Installation
+
+```bash
+pip install pyspecies
+```
+
+## Usage
+
+For example, the following code computes a solution of the SKT model and converges to a non-homogeneous steady state:
 
 ```python
 import numpy as np
-from pyspecies import pop, models
 
+from pyspecies import models, pop
+
+# Define population and interaction model
 q = pop.Pop(
-    space=(0, 1, 200),  # lower bound, upper bound, number of points
+    space=(0, 1, 200),
     u0=lambda x: 1 + np.cos(2 * np.pi * x),
     v0=lambda x: 1 + np.sin(2 * np.pi * x),
     model=models.SKT(
@@ -28,9 +38,15 @@ for i in range(-2, 2):
 
 # Animate the result
 q.anim()
+
+# Show the evolution of the population over space and time
+# q.heatmap()
+
+# Show the final state of the population (100%)
+# q.snapshot(1)
 ```
 
-And this renders a cyclic solution of the Lotka-Volterra equations:
+This code displays a cyclic, homogenous solution of the Lotka-Volterra equations:
 
 ```python
 p = pop.Pop(
@@ -44,3 +60,7 @@ p.sim(duration=20, N=200)
 p.sim(duration=100, N=200)
 p.anim()
 ```
+
+## Theory
+
+The calculations underlying this library are described (in French) in the following document: [Théorie](./misc/theory.pdf).

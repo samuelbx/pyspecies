@@ -4,7 +4,7 @@
 
 Blazing-fast simulation of population dynamics, based on the Shigesada-Kawasaki-Teramoto (SKT) reaction-diffusion model. [[PubMed '79]](https://pubmed.ncbi.nlm.nih.gov/513804/)
 
-![Population dynamics simulation](https://github.com/samuel-boite/pyspecies/raw/main/misc/example.gif)
+![Population dynamics simulation](https://github.com/samuelbx/pyspecies/raw/main/misc/example.gif)
 
 ## Installation
 
@@ -63,4 +63,4 @@ p.anim()
 
 ## Theory
 
-The calculations underlying this library are described (in French) in the [following document](https://github.com/samuel-boite/pyspecies/blob/main/misc/theory.pdf).
+The calculations underlying this library are described (in French) in the [following document](https://github.com/samuelbx/pyspecies/blob/main/misc/theory.pdf).

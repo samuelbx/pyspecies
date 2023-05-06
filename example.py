@@ -15,7 +15,7 @@ q = pop.Pop(
 
 # Simulate with increasing speeds
 for i in range(-2, 2):
-    q.sim(duration=2*10**i, N=100)
+    q.sim(duration=2 * 10**i, N=100)
 
 # Animate the result
 q.anim()

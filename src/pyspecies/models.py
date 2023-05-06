@@ -5,8 +5,8 @@ class SKT:
     """Sheguesada-Kawazaki-Teramoto population interaction model.
 
     Attributes:
-        D (np.ndarray): Diffusion matrix.
-        R (np.ndarray): Reaction matrix.
+        D (np.ndarray): diffusion matrix.
+        R (np.ndarray): reaction matrix.
     """
 
     def __init__(self, D: np.ndarray, R: np.ndarray) -> None:
@@ -17,10 +17,10 @@ class LV(SKT):
     """Lotka-Volterra population interaction model. Coefficients must all be positive.
 
     Attributes:
-        a (float): Prey repoduction rate.
-        b (float): Prey mortality due to predators.
-        c (float): Predator reproduction due to eating preys.
-        d (float): Predator death rate.
+        a (float): prey repoduction rate.
+        b (float): prey mortality due to predators.
+        c (float): predator reproduction due to eating preys.
+        d (float): predator death rate.
     """
 
     def __init__(self, a: float, b: float, c: float, d: float) -> None:
@@ -36,12 +36,12 @@ class CLV(SKT):
     See https://en.wikipedia.org/wiki/Competitive_Lotka-Volterra_equations.
 
     Attributes:
-        r1 (float): Reproduction rate for (1).
-        r2 (float): Reproduction rate for (2).
-        K1 (float): Carrying capacity for (1).
-        K2 (float): Carrying capacity for (2).
-        s12 (float): Competitive effect (1) has on (2).
-        s21 (float): Competitive effect (2) has on (1).
+        r1 (float): reproduction rate for (1).
+        r2 (float): reproduction rate for (2).
+        K1 (float): carrying capacity for (1).
+        K2 (float): carrying capacity for (2).
+        s12 (float): competitive effect (1) has on (2).
+        s21 (float): competitive effect (2) has on (1).
     """
 
     def __init__(

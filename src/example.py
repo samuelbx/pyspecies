@@ -19,3 +19,9 @@ for i in range(-2, 2):
 
 # Animate the result
 q.anim()
+
+# Show the evolution of the population over space and time
+# q.heatmap()
+
+# Show the final state of the population (100%)
+# q.snapshot(1)

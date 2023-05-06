@@ -34,13 +34,13 @@ def UVtoX(U: np.ndarray, V: np.ndarray) -> np.ndarray:
 def merge_diags(
     P: list[np.ndarray], Q: list[np.ndarray], R: list[np.ndarray], S: list[np.ndarray]
 ) -> list[np.ndarray]:
-    """Assemble the list of diagonals of the Jacobian from block data.
+    """Assemble the list of diagonals of the Jacobian from the block data.
 
     Args:
-        P (list[np.ndarray]): List of diagonals for upper-left Jacobian block.
-        Q (list[np.ndarray]): List of diagonals for upper-right Jacobian block.
-        R (list[np.ndarray]): List of diagonals for lower-left Jacobian block.
-        S (list[np.ndarray]): List of diagonals for lower-right Jacobian block.
+        P (list[np.ndarray]): upper left Jacobian block.
+        Q (list[np.ndarray]): upper right Jacobian block.
+        R (list[np.ndarray]): lower left Jacobian block.
+        S (list[np.ndarray]): lower right Jacobian block.
 
     Returns:
         list[np.ndarray]: List of diagonals for full Jacobian.
@@ -61,16 +61,14 @@ def merge_diags(
 
 
 def f(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray) -> np.ndarray:
-    """Used to compute the function whose roots are looked for.
-
-    See the theory for more details.
+    """Helper function involved in the calculation of the functional to be cancelled. See the theory for more details.
 
     Args:
-        i (int): Species index.
-        A (np.ndarray): First concentration vector.
-        B (np.ndarray): Second concentration vector.
-        D (np.ndarray): Normalized diffusion matrix.
-        R (np.ndarray): Normalized reaction matrix.
+        i (int): species index (0 or 1).
+        A (np.ndarray): first concentration vector.
+        B (np.ndarray): second concentration vector.
+        D (np.ndarray): re-normalized diffusion matrix.
+        R (np.ndarray): re-normalized reaction matrix.
 
     Returns:
         np.ndarray: Output vector.
@@ -87,15 +85,13 @@ def f(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray) -> np.
 
 
 def mu(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray) -> np.ndarray:
-    """Used to compute the Jacobian.
-
-    See the theory for more details.
+    """Helper function involved in the calculation of the Jacobian. See the theory for more details.
 
     Args:
-        i (int): Species index.
-        A (np.ndarray): First concentration vector.
-        B (np.ndarray): Second concentration vector.
-        D (np.ndarray): Normalized diffusion matrix.
+        i (int): species index.
+        A (np.ndarray): first concentration vector.
+        B (np.ndarray): second concentration vector.
+        D (np.ndarray): re-normalized diffusion matrix.
 
     Returns:
         np.ndarray: Output vector.
@@ -107,16 +103,13 @@ def mu(i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray) -> np.ndarray:
 def nu(
     i: int, A: np.ndarray, B: np.ndarray, D: np.ndarray, R: np.ndarray
 ) -> np.ndarray:
-    """Used to compute the Jacobian.
-
-    See the theory for more details.
+    """Helper function involved in the calculation of the Jacobian. See the theory for more details.
 
     Args:
-        i (int): Species index.
-        A (np.ndarray): First concentration vector.
-        B (np.ndarray): Second concentration vector.
-        D (np.ndarray): Normalized diffusion matrix.
-        R (np.ndarray): Normalized reaction matrix.
+        i (int): species index.
+        A (np.ndarray): first concentration vector.
+        B (np.ndarray): second concentration vector.
+        D (np.ndarray): re-normalized diffusion matrix.
 
     Returns:
         np.ndarray: Output vector.
@@ -132,15 +125,13 @@ def nu(
 def block_diags(
     i: int, A: np.ndarray, D: np.ndarray, R: np.ndarray
 ) -> list[np.ndarray]:
-    """Used to compute two of the Jacobian's blocks.
-
-    See the theory for more details.
+    """Used to compute two of the Jacobian's blocks. See the theory for more details.
 
     Args:
-        i (int): Species index.
-        A (np.ndarray): First concentration vector.
-        D (np.ndarray): Normalized diffusion matrix.
-        R (np.ndarray): Normalized reaction matrix.
+        i (int): species index (0 or 1).
+        A (np.ndarray): first concentration vector.
+        D (np.ndarray): re-normalized diffusion matrix.
+        R (np.ndarray): re-normalized reaction matrix.
 
     Returns:
         list[np.ndarray]: List of diagonals for the specified block.

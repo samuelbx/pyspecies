@@ -1,10 +1,10 @@
 # PySpecies
 
-Blazing-fast simulation of advanced 1D population dynamics.
+[![PyPI version](https://badge.fury.io/py/pyspecies.svg)](https://badge.fury.io/py/pyspecies)
 
-Based on the Shigesada Kawasaki Teramoto (SKT) reaction-diffusion model. [[PubMed '79]](https://pubmed.ncbi.nlm.nih.gov/513804/)
+Blazing-fast simulation of population dynamics, based on the Shigesada-Kawasaki-Teramoto (SKT) reaction-diffusion model. [[PubMed '79]](https://pubmed.ncbi.nlm.nih.gov/513804/)
 
-![Population dynamics simulation](./misc/example.gif)
+![Population dynamics simulation](https://github.com/samuel-boite/pyspecies/raw/main/misc/example.gif)
 
 ## Installation
 
@@ -63,4 +63,4 @@ p.anim()
 
 ## Theory
 
-The calculations underlying this library are described (in French) in the following document: [Théorie](./misc/theory.pdf).
+The calculations underlying this library are described (in French) in the [following document](https://github.com/samuel-boite/pyspecies/blob/main/misc/theory.pdf).

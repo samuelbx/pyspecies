@@ -11,7 +11,7 @@ setuptools.setup(
     description="Blazing-fast simulation of self-organized patterns in reaction-diffusion systems.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/samuel-boite/pyspecies",
+    url="https://github.com/samuelbx/pyspecies",
     package_dir = {"": "src"},
     packages = setuptools.find_packages(where="src"),
     classifiers=[

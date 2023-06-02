@@ -4,6 +4,8 @@
 
 Blazing-fast simulation of population dynamics, based on the Shigesada-Kawasaki-Teramoto (SKT) reaction-diffusion model. [[PubMed '79]](https://pubmed.ncbi.nlm.nih.gov/513804/)
 
+Supports stochastic approximate resolution using the Gillespie algorithm, and adding custom population models. Uses periodic boundary conditions.
+
 ![Population dynamics simulation](https://github.com/samuelbx/pyspecies/raw/main/misc/example.gif)
 
 ## Installation
@@ -46,6 +48,8 @@ q.anim()
 # q.snapshot(1)
 ```
 
+See [[Breden '19]](https://arxiv.org/pdf/1910.03436.pdf) at page 2 for a description of the SKT model and its parameters `D` and `R`.
+
 This code displays a cyclic, homogenous solution of the Lotka-Volterra equations:
 
 ```python
@@ -61,6 +65,19 @@ p.sim(duration=100, N=200)
 p.anim()
 ```
 
-## Theory
+Feel free to experiment the discrete model `models.Discrete` to see an approximate resolution using the Gillespie algorithm.
 
-The calculations underlying this library are described (in French) in the [following document](https://github.com/samuelbx/pyspecies/blob/main/misc/theory.pdf).
+Models can be defined by the user, for example:
+
+```python
+class CustomModel(models.Model):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def sim(self, X0, Space, Time):
+        # Space and time evolution of the population
+        Xlist, Tlist = None, None
+        # ...
+        return Xlist, Tlist
+```

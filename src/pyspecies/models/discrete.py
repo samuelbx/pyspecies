@@ -8,7 +8,7 @@ from pyspecies._utils import XtoUV
 from pyspecies.models import Model
 
 FPS = 20
-LENGTH = 7
+LENGTH = 10
 TAU_LEAP = int(2e3)
 
 
@@ -18,22 +18,24 @@ class Discrete(Model):
     def __init__(self, D: np.ndarray, R: np.ndarray, avg_density: int) -> None:
         if avg_density < 50:
             warnings.warn(
-                "Average density must be at least 100 for tau-leaping to work. Results might be inaccurate."
+                "Average density must be at least 100 for tau-leaping to work reliably. Results might be inaccurate."
             )
         self.D, self.R, self.avg_density = D, R, avg_density
 
     def sim(
         self, X0_f: np.ndarray, Space: np.ndarray, Time: np.ndarray
-    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    ) -> tuple[list[np.ndarray], list[float]]:
         """Simulates discrete steps of population dynamics using Gillespie algorithm."""
         N = Time.shape[0]
         X0 = np.zeros((2, len(X0_f) // 2))
         X0[0, :], X0[1, :] = XtoUV(X0_f)
         X0 = np.floor(self.avg_density * X0) / self.avg_density
-        X = X0.copy()
+        X, T = X0.copy(), 0
         self.D *= len(Space) ** 2
 
-        evol, Tlist = np.zeros((N * TAU_LEAP, 4), dtype=int), np.zeros(N * TAU_LEAP)
+        nbr_frames = FPS * LENGTH
+        Xlist, Tlist = [], []
+
         for i in tqdm(range(N), "Simulating steps"):
             binom = npr.binomial(1, 0.5, TAU_LEAP)
             exp = npr.exponential(1, TAU_LEAP)
@@ -43,37 +45,22 @@ class Discrete(Model):
 
             # Add random directions to events
             dirs = 2 * binom - 1
-            events = np.zeros((len(events_sample[0]), 4), dtype=int)
+            events = np.zeros((events_sample[0].shape[0], 4), dtype=int)
             events[:, :3] = events_sample.T
             events[:, 3] = ((events[:, 2] + dirs) % len(Space)).astype(int)
 
-            # Store events
-            rng = i * TAU_LEAP + np.arange(TAU_LEAP)
-            evol[rng] = events
-            Tlist[rng] = np.cumsum(exp) / param
-
             # Update concentrations
+            T += np.cumsum(exp) / param
             for event in events:
                 self.process_event(X, *event)
 
-        self.D /= len(Space) ** 2
-        return self.rebuild_evolution(X0, evol, Tlist)
+            # Only store new frame if enough time has passed
+            if i % np.ceil(N / nbr_frames) == 0:
+                Xlist.append(X.flatten().copy())
+                Tlist.append(T)
 
-    def rebuild_evolution(
-        self, X0: np.ndarray, evol: list[np.ndarray], Tlist: list[float], length=LENGTH
-    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
-        """Rebuild the evolution of the system from the list of events, skipping unnecessary frames."""
-        Xlist = [X0.copy()]
-        nbr_frames = FPS * length
-        Tlist_new = [0]
-        X_current = X0.copy()
-        for i, event in tqdm(enumerate(evol), "Rebuilding evolution"):
-            self.process_event(X_current, *event)
-            if i % np.ceil(len(evol) / nbr_frames) == 0:
-                Xlist.append(X_current.flatten().copy())
-                Tlist_new.append(Tlist_new[-1] + Tlist[i])
-        Xlist[0] = Xlist[0].flatten()
-        return Xlist, Tlist_new
+        self.D /= len(Space) ** 2
+        return Xlist, Tlist
 
     def update_rates(self, U: np.ndarray, V: np.ndarray) -> tuple[np.ndarray, float]:
         """Update the transition rates of possible events. The rates are stored in a 3D array of shape (3, 2, K) where K is the number of space points, and the first dimension corresponds to the event type (0 for diffusion, 1 for birth, 2 for death) and the second dimension corresponds to the species (0 for U, 1 for V)."""

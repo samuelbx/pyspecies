@@ -22,7 +22,9 @@ class Discrete(Model):
             )
         self.D, self.R, self.avg_density = D, R, avg_density
 
-    def sim(self, X0_f: np.ndarray, Space: np.ndarray, Time: np.ndarray):
+    def sim(
+        self, X0_f: np.ndarray, Space: np.ndarray, Time: np.ndarray
+    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
         """Simulates discrete steps of population dynamics using Gillespie algorithm."""
         N = Time.shape[0]
         X0 = np.zeros((2, len(X0_f) // 2))
@@ -59,7 +61,7 @@ class Discrete(Model):
 
     def rebuild_evolution(
         self, X0: np.ndarray, evol: list[np.ndarray], Tlist: list[float], length=LENGTH
-    ) -> list[np.ndarray]:
+    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
         """Rebuild the evolution of the system from the list of events, skipping unnecessary frames."""
         Xlist = [X0.copy()]
         nbr_frames = FPS * length
@@ -73,7 +75,7 @@ class Discrete(Model):
         Xlist[0] = Xlist[0].flatten()
         return Xlist, Tlist_new
 
-    def update_rates(self, U: np.ndarray, V: np.ndarray):
+    def update_rates(self, U: np.ndarray, V: np.ndarray) -> tuple[np.ndarray, float]:
         """Update the transition rates of possible events. The rates are stored in a 3D array of shape (3, 2, K) where K is the number of space points, and the first dimension corresponds to the event type (0 for diffusion, 1 for birth, 2 for death) and the second dimension corresponds to the species (0 for U, 1 for V)."""
         rates = np.zeros((3, 2, len(U)))
         rates[0, 0, :] = U * (self.D[0, 0] + self.D[0, 1] * U + self.D[0, 2] * V)
@@ -91,7 +93,7 @@ class Discrete(Model):
 
     def process_event(
         self, X: np.ndarray, event_type: int, species: int, start: int, end: int
-    ):
+    ) -> None:
         """Process an event (diffusion, birth or death) by updating the concentrations. End is always passed but only used for diffusion events."""
         if event_type == 0 and X[species, start] > 1 / self.avg_density:
             X[species, start] -= 1 / self.avg_density

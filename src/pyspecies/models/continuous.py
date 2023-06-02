@@ -15,7 +15,9 @@ class Continuous(Model):
     def funcjac(self, dx: float, dt: float):
         pass
 
-    def sim(self, X0: np.ndarray, Space: np.ndarray, Time: np.ndarray):
+    def sim(
+        self, X0: np.ndarray, Space: np.ndarray, Time: np.ndarray
+    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
         dx, dt = Space[1] - Space[0], Time[1] - Time[0]
         return back_euler(X0, Time, self.funcjac(dx, dt)), Time
 

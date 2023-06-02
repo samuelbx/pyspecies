@@ -11,14 +11,12 @@ def back_euler(
     newt_thres: float = 1e-4,
     max_iter: int = 10,
 ) -> list[np.ndarray]:
-    """Solves the reaction-diffusion system using the backward Euler method.
+    """Backward Euler method with Newton-Raphson algorithm.
 
     Args:
         X0 (np.ndarray): initial concentration vector.
         Time (np.ndarray): time steps.
-        Space (np.ndarray): space steps.
-        D (np.ndarray): diffusion matrix.
-        R (np.ndarray): reaction matrix.
+        funcjac (callable): function and its Jacobian.
         newt_thres (float, optional): convergence threshold for Newton's method (defaults to 1e-4)
         max_iter (int, optional): maximum number of iterations for Newton's method (defaults to 10)
 

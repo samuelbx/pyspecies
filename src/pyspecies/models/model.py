@@ -6,5 +6,7 @@ class Model(ABC):
     """Abstract class for population models."""
 
     @abstractmethod
-    def sim(self, Space: np.ndarray, Time: np.ndarray):
+    def sim(
+        self, X0: np.ndarray, Space: np.ndarray, Time: np.ndarray
+    ) -> tuple[list[np.ndarray], list[np.ndarray]]:
         pass

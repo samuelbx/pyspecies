@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="PySpecies",
-    version="0.1.2",
+    version="0.2.0",
     author="Samuel Boïté, Mathias Grau",
     author_email="boite.samuel@gmail.com",
     description="Blazing-fast simulation of self-organized patterns in reaction-diffusion systems.",

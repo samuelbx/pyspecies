@@ -8,8 +8,7 @@ q = pop.Pop(
     u0=lambda x: 1 + np.cos(2 * np.pi * x),
     v0=lambda x: 1 + np.sin(2 * np.pi * x),
     model=models.SKT(
-        D=np.array([[5e-3, 0, 3], [5e-3, 0, 0]]),
-        R=np.array([[5, 3, 1], [2, 1, 3]])
+        D=np.array([[5e-3, 0, 3], [5e-3, 0, 0]]), R=np.array([[5, 3, 1], [2, 1, 3]])
     ),
 )
 
@@ -23,5 +22,5 @@ q.anim()
 # Show the evolution of the population over space and time
 # q.heatmap()
 
-# Show the final state of the population (100%)
+# Show the final state of the population (100 %)
 # q.snapshot(1)
